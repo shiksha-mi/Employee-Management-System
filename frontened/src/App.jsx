@@ -12,6 +12,9 @@ import EmployeeList from "./components/employee/EmployeeList";
 import AddEmployee from "./components/employee/AddEmployee";
 import EditEmployee from "./components/employee/EditEmployee";
 import ViewEmployee from "./components/employee/ViewEmployee";
+import LeaveList from "./components/leave/LeaveList";
+import AddLeave from "./components/leave/AddLeave";
+import ViewLeave from "./components/leave/ViewLeave";
 
 function App() {
   return (
@@ -47,6 +50,13 @@ function App() {
           <Route path="add-employee" element={<AddEmployee />} />
           <Route path="employees/:id" element={<EditEmployee />} />
           <Route path="employees/view/:id" element={<ViewEmployee />} />
+
+          <Route path="leaves" element={<LeaveList />} />
+          <Route path="add-leave" element={<AddLeave />} />
+          <Route
+  path="leaves/:id"
+  element={<ViewLeave />}
+/>
         </Route>
 
         {/* Employee Dashboard */}
