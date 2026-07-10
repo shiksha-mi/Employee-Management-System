@@ -1,3 +1,4 @@
+
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -8,6 +9,7 @@ import employeeRouter from "./routes/employeeRoutes.js";
 import connectToDatabase from "./db/db.js";
 import dashboardRouter from "./routes/dashboard.js";
 import leaveRouter from "./routes/leaveRoutes.js";
+import salaryRouter from "./routes/salaryRoutes.js";
 
 connectToDatabase();
 
@@ -22,8 +24,10 @@ app.use("/uploads", express.static(path.join("public", "uploads")));
 app.use("/api/auth", authRouter);
 app.use("/api/department", departmentRouter);
 app.use("/api/employee", employeeRouter);
+
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/leave", leaveRouter);
+app.use("/api/salary", salaryRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
