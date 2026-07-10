@@ -4,17 +4,28 @@ import AdminDashboard from "./pages/AdminDashboard";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import PrivateRoutes from "./utils/PrivateRoutes";
 import RoleBaseRoutes from "./utils/RoleBaseRoutes";
+
 import AdminSummary from "./components/dashboard/AdminSummary";
+
+// Department
 import DepartmentList from "./components/department/DepartmentList";
 import AddDepartment from "./components/department/AddDepartment";
 import EditDepartment from "./components/department/EditDepartment";
+
+// Employee
 import EmployeeList from "./components/employee/EmployeeList";
 import AddEmployee from "./components/employee/AddEmployee";
 import EditEmployee from "./components/employee/EditEmployee";
 import ViewEmployee from "./components/employee/ViewEmployee";
+
+// Leave
 import LeaveList from "./components/leave/LeaveList";
 import AddLeave from "./components/leave/AddLeave";
 import ViewLeave from "./components/leave/ViewLeave";
+
+// Salary
+import SalaryList from "./components/salary/SalaryList";
+import AddSalary from "./components/salary/AddSalary";
 
 function App() {
   return (
@@ -38,6 +49,7 @@ function App() {
             </PrivateRoutes>
           }
         >
+          {/* Dashboard */}
           <Route index element={<AdminSummary />} />
 
           {/* Department Routes */}
@@ -51,12 +63,15 @@ function App() {
           <Route path="employees/:id" element={<EditEmployee />} />
           <Route path="employees/view/:id" element={<ViewEmployee />} />
 
+          {/* Leave Routes */}
           <Route path="leaves" element={<LeaveList />} />
           <Route path="add-leave" element={<AddLeave />} />
-          <Route
-  path="leaves/:id"
-  element={<ViewLeave />}
-/>
+          <Route path="leaves/:id" element={<ViewLeave />} />
+
+          {/* Salary Routes */}
+          <Route path="salary" element={<SalaryList />} />
+          <Route path="add-salary" element={<AddSalary />} />
+
         </Route>
 
         {/* Employee Dashboard */}
@@ -64,6 +79,7 @@ function App() {
           path="/employee-dashboard"
           element={<EmployeeDashboard />}
         />
+
       </Routes>
     </BrowserRouter>
   );
