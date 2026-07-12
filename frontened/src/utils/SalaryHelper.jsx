@@ -32,11 +32,44 @@ export const columns = [
   },
 ];
 
+import axios from "axios";
+
+
 export const SalaryButtons = ({ _id }) => {
   const navigate = useNavigate();
 
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this salary?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await axios.delete(
+        `http://localhost:5000/api/salary/${_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        alert("Salary Deleted Successfully");
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log(error);
+      alert(error.response?.data?.error || "Something went wrong");
+    }
+  };
+
   return (
     <div className="flex gap-2">
+
       <button
         onClick={() => navigate(`/admin-dashboard/salary/${_id}`)}
         className="bg-green-500 text-white px-3 py-1 rounded"
@@ -50,6 +83,14 @@ export const SalaryButtons = ({ _id }) => {
       >
         Edit
       </button>
+
+      <button
+        onClick={handleDelete}
+        className="bg-red-500 text-white px-3 py-1 rounded"
+      >
+        Delete
+      </button>
+
     </div>
   );
 };

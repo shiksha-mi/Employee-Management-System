@@ -5,7 +5,12 @@ import EmployeeDashboard from "./pages/EmployeeDashboard";
 import PrivateRoutes from "./utils/PrivateRoutes";
 import RoleBaseRoutes from "./utils/RoleBaseRoutes";
 
+import Profile from "./components/employee/Profile";
+import MyLeaves from "./components/employee/MyLeaves";
+
 import AdminSummary from "./components/dashboard/AdminSummary";
+import EmployeeSummary from "./components/dashboard/EmployeeSummary";
+
 
 // Department
 import DepartmentList from "./components/department/DepartmentList";
@@ -26,6 +31,9 @@ import ViewLeave from "./components/leave/ViewLeave";
 // Salary
 import SalaryList from "./components/salary/SalaryList";
 import AddSalary from "./components/salary/AddSalary";
+import ViewSalary from "./components/salary/ViewSalary";
+import EditSalary from "./components/salary/EditSalary";
+
 
 function App() {
   return (
@@ -71,14 +79,26 @@ function App() {
           {/* Salary Routes */}
           <Route path="salary" element={<SalaryList />} />
           <Route path="add-salary" element={<AddSalary />} />
+          <Route path="salary/:id" element={<ViewSalary />} />
+          <Route path="salary/edit/:id" element={<EditSalary />} />
 
         </Route>
 
-        {/* Employee Dashboard */}
-        <Route
-          path="/employee-dashboard"
-          element={<EmployeeDashboard />}
-        />
+       {/* Employee Dashboard */}
+<Route
+  path="/employee-dashboard"
+  element={
+    <PrivateRoutes>
+      <RoleBaseRoutes requiredRole={["employee"]}>
+        <EmployeeDashboard />
+      </RoleBaseRoutes>
+    </PrivateRoutes>
+  }
+>
+  <Route index element={<EmployeeSummary />} />
+  <Route path="profile" element={<Profile />} />
+  <Route path="my-leaves" element={<MyLeaves />} />
+</Route>
 
       </Routes>
     </BrowserRouter>

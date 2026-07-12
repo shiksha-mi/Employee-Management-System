@@ -1,19 +1,32 @@
-import React from 'react'
+import React from "react";
 import { useAuth } from "../context/authContext";
-import { Navigate } from 'react-router-dom';
+import { Navigate } from "react-router-dom";
 
-const RoleBaseRoutes = ({ children , requiredRole }) => {
-    const { user , loading } = useAuth();
+const RoleBaseRoutes = ({ children, requiredRole }) => {
+  const { user, loading } = useAuth();
 
-    if (loading) {
-      return <div>Loading...</div>; // Show a loading indicator while checking authentication
-    }
+  // Wait until authentication is checked
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-    if(!requiredRole.includes(user.role)){
-  return <Navigate to = "/unauthorized"/>// Render children if authenticated, otherwise show access denied message
-}
+  // If user is not logged in
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
 
-    return user ? children : <Navigate to = "/login"/>// Render children if authenticated, otherwise show access denied message}
-}
+  // Debugging (you can remove these later)
+  console.log("User:", user);
+  console.log("User Role:", user.role);
+  console.log("Required Role:", requiredRole);
 
-export default RoleBaseRoutes
+  // Check if user has the required role
+  if (!requiredRole.includes(user.role)) {
+    return <Navigate to="/unauthorized" />;
+  }
+
+  // User is authorized
+  return children;
+};
+
+export default RoleBaseRoutes;

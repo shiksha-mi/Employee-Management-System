@@ -3,6 +3,7 @@ import authMiddleware from "../middleware/authMiddleware.js";
 import {
   addLeave,
   getLeaves,
+  getMyLeaves,
   getLeave,
   updateLeaveStatus,
 } from "../controllers/leaveController.js";
@@ -10,6 +11,12 @@ import {
 const router = express.Router();
 
 router.get("/", authMiddleware, getLeaves);
+
+router.get(
+  "/my-leaves",
+  authMiddleware,
+  getMyLeaves
+);
 
 router.get("/:id", authMiddleware, getLeave);
 

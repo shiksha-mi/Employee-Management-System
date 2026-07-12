@@ -1,17 +1,20 @@
-import React from 'react'
+import React from "react";
 
-const SummaryCard = ({icon, text, number, color}) => {
+const SummaryCard = ({ icon, text, number, color }) => {
   return (
-    <div className="rounded flex bg-white">
-        <div className={`text-3xl flex justify-center items-center ${color} text-white px-4`}>
-            {icon}
-        </div>
-        <div className="pl-4 py-1">
-            <p className = "text-lg font-semibold">{text}</p>
-            <p className ="text-xl font-bold">{number}</p>
-        </div>
-    </div>
-  )
-}
+    <div className="flex bg-white rounded-xl shadow-md hover:shadow-lg transition duration-300 overflow-hidden">
+      <div
+        className={`${color} text-white flex items-center justify-center text-3xl px-6`}
+      >
+        {icon}
+      </div>
 
-export default SummaryCard
+      <div className="p-4">
+        <p className="text-gray-500 font-semibold">{text}</p>
+        <p className="text-3xl font-bold">{number}</p>
+      </div>
+    </div>
+  );
+};
+
+export default SummaryCard;

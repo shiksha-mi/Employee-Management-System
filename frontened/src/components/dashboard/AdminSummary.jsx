@@ -1,10 +1,25 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import SummaryCard from "./SummaryCard";
+import Charts from "./Charts";
+
+import {
+  FaUsers,
+  FaBuilding,
+  FaMoneyBillWave,
+  FaClock,
+  FaCheckCircle,
+  FaTimesCircle,
+} from "react-icons/fa";
 
 const AdminSummary = () => {
   const [summary, setSummary] = useState({
     totalEmployees: 0,
     totalDepartments: 0,
+    totalSalaryRecords: 0,
+    pendingLeaves: 0,
+    approvedLeaves: 0,
+    rejectedLeaves: 0,
   });
 
   useEffect(() => {
@@ -23,17 +38,29 @@ const AdminSummary = () => {
           setSummary(response.data);
         }
       } catch (error) {
-        console.log(error);
+        console.log("Summary Error:", error.response?.data || error.message);
+      }
+    };
 
-        if (error.response) {
-          alert(error.response.data.error);
-        } else {
-          alert("Server Error");
-        }
+    const fetchChart = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/dashboard/chart",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        console.log("Chart Data:", response.data);
+      } catch (error) {
+        console.log("Chart Error:", error.response?.data || error.message);
       }
     };
 
     fetchSummary();
+    fetchChart();
   }, []);
 
   return (
@@ -42,30 +69,54 @@ const AdminSummary = () => {
         Dashboard Overview
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        <div className="bg-white shadow-lg rounded-lg p-6 border-l-4 border-blue-500">
-          <h3 className="text-lg font-semibold text-gray-600">
-            Total Employees
-          </h3>
+        <SummaryCard
+          icon={<FaUsers />}
+          text="Total Employees"
+          number={summary.totalEmployees}
+          color="bg-blue-600"
+        />
 
-          <p className="text-4xl font-bold mt-3">
-            {summary.totalEmployees}
-          </p>
-        </div>
+        <SummaryCard
+          icon={<FaBuilding />}
+          text="Departments"
+          number={summary.totalDepartments}
+          color="bg-green-600"
+        />
 
-        <div className="bg-white shadow-lg rounded-lg p-6 border-l-4 border-green-500">
-          <h3 className="text-lg font-semibold text-gray-600">
-            Total Departments
-          </h3>
+        <SummaryCard
+          icon={<FaMoneyBillWave />}
+          text="Salary Records"
+          number={summary.totalSalaryRecords}
+          color="bg-purple-600"
+        />
 
-          <p className="text-4xl font-bold mt-3">
-            {summary.totalDepartments}
-          </p>
-        </div>
+        <SummaryCard
+          icon={<FaClock />}
+          text="Pending Leaves"
+          number={summary.pendingLeaves}
+          color="bg-yellow-500"
+        />
+
+        <SummaryCard
+          icon={<FaCheckCircle />}
+          text="Approved Leaves"
+          number={summary.approvedLeaves}
+          color="bg-emerald-600"
+        />
+
+        <SummaryCard
+          icon={<FaTimesCircle />}
+          text="Rejected Leaves"
+          number={summary.rejectedLeaves}
+          color="bg-red-600"
+        />
 
       </div>
+      <Charts />
     </div>
+   
   );
 };
 

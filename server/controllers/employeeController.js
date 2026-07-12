@@ -121,6 +121,36 @@ const getEmployee = async (req, res) => {
     });
   }
 };
+
+const getEmployeeProfile = async (req, res) => {
+  try {
+    const employee = await Employee.findOne({
+      userId: req.user._id,
+    })
+      .populate("userId", "-password")
+      .populate("department");
+
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        error: "Employee not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      employee,
+    });
+
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+};
 const updateEmployee = async (req, res) => {
   try {
     const { id } = req.params;
@@ -203,6 +233,7 @@ export {
   addEmployee,
   getEmployees,
   getEmployee,
+  getEmployeeProfile,
   updateEmployee,
   deleteEmployee,
 };

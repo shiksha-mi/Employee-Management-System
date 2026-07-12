@@ -1,17 +1,29 @@
 import Leave from "../models/Leave.js";
+import Employee from "../models/Employee.js";
 
+// Apply Leave
 const addLeave = async (req, res) => {
   try {
     const {
-      employeeId,
       leaveType,
       fromDate,
       toDate,
       description,
     } = req.body;
 
+    const employee = await Employee.findOne({
+      userId: req.user._id,
+    });
+
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        error: "Employee not found",
+      });
+    }
+
     const newLeave = new Leave({
-      employeeId,
+      employeeId: employee._id,
       leaveType,
       fromDate,
       toDate,
@@ -34,6 +46,7 @@ const addLeave = async (req, res) => {
   }
 };
 
+// Admin - Get All Leaves
 const getLeaves = async (req, res) => {
   try {
     const leaves = await Leave.find().populate({
@@ -58,6 +71,39 @@ const getLeaves = async (req, res) => {
   }
 };
 
+// Employee - Get My Leaves
+const getMyLeaves = async (req, res) => {
+  try {
+    const employee = await Employee.findOne({
+      userId: req.user._id,
+    });
+
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        error: "Employee not found",
+      });
+    }
+
+    const leaves = await Leave.find({
+      employeeId: employee._id,
+    }).sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      leaves,
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
+// Get Single Leave
 const getLeave = async (req, res) => {
   try {
     const { id } = req.params;
@@ -97,6 +143,8 @@ const getLeave = async (req, res) => {
     });
   }
 };
+
+// Admin - Update Leave Status
 const updateLeaveStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -120,7 +168,6 @@ const updateLeaveStatus = async (req, res) => {
       message: "Leave status updated successfully",
       leave,
     });
-
   } catch (error) {
     console.log(error);
 
@@ -134,6 +181,7 @@ const updateLeaveStatus = async (req, res) => {
 export {
   addLeave,
   getLeaves,
+  getMyLeaves,
   getLeave,
   updateLeaveStatus,
 };

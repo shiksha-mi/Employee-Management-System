@@ -26,23 +26,26 @@ const SalaryList = () => {
         let sno = 1;
 
         const data = response.data.salaries.map((salary) => ({
-          _id: salary._id,
-          sno: sno++,
+  _id: salary._id,
+  sno: sno++,
 
-          employee: salary.employeeId.userId.name,
+  employee: salary.employeeId.userId.name,
 
-          salary: `₹${salary.basicSalary}`,
+  basicSalary: salary.basicSalary,
 
-          allowance: `₹${salary.allowances}`,
+  allowance: salary.allowances,
 
-          deduction: `₹${salary.deductions}`,
+  deduction: salary.deductions,
 
-          payDate: new Date(
-            salary.payDate
-          ).toLocaleDateString(),
+  netSalary:
+    Number(salary.basicSalary) +
+    Number(salary.allowances) -
+    Number(salary.deductions),
 
-          action: <SalaryButtons _id={salary._id} />,
-        }));
+  payDate: new Date(salary.payDate).toLocaleDateString(),
+
+  action: <SalaryButtons _id={salary._id} />,
+}));
 
         setSalaries(data);
         setFilteredSalary(data);
