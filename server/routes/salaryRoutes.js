@@ -6,6 +6,8 @@ import {
   getSalary,
   updateSalary,
   deleteSalary,
+  getMySalary,
+  downloadSalarySlip,
 } from "../controllers/salaryController.js";
 
 const router = express.Router();
@@ -14,6 +16,16 @@ const router = express.Router();
 router.post("/add", authMiddleware, addSalary);
 
 router.get("/", authMiddleware, getSalaries);
+
+
+
+router.get("/my-salary", authMiddleware, getMySalary);
+
+router.get(
+  "/download/:id",
+  authMiddleware,
+  downloadSalarySlip
+);
 
 
 router.get("/:id", authMiddleware, getSalary);

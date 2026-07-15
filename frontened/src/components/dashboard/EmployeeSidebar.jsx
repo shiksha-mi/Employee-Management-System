@@ -5,6 +5,7 @@ import {
   FaUser,
   FaCalendarAlt,
   FaMoneyBillWave,
+  FaClipboardCheck,
 } from "react-icons/fa";
 
 const EmployeeSidebar = () => {
@@ -58,6 +59,16 @@ const EmployeeSidebar = () => {
           <FaMoneyBillWave />
           <span>My Salary</span>
         </NavLink>
+
+        <NavLink
+  to="/employee-dashboard/attendance"
+  className={({ isActive }) =>
+    `${isActive ? "bg-teal-600" : ""} flex items-center space-x-4 py-2.5 px-4 rounded`
+  }
+>
+  <FaClipboardCheck />
+  <span>My Attendance</span>
+</NavLink>
 
       </div>
     </div>

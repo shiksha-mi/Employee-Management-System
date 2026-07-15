@@ -7,6 +7,7 @@ import {
   FaCalendarAlt,
   FaMoneyBillWave,
   FaCog,
+  FaClipboardCheck,
 } from "react-icons/fa";
 
 const AdminSidebar = () => {
@@ -86,6 +87,16 @@ const AdminSidebar = () => {
           <FaCog />
           <span>Settings</span>
         </NavLink>
+
+        <NavLink
+  to="/admin-dashboard/attendance"
+  className={({ isActive }) =>
+    `${isActive ? "bg-teal-600" : ""} flex items-center space-x-4 py-2.5 px-4 rounded`
+  }
+>
+  <FaClipboardCheck />
+  <span>Attendance</span>
+</NavLink>
 
       </div>
     </div>

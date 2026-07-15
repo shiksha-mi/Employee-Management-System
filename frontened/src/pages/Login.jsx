@@ -25,15 +25,20 @@ const Login = () => {
       );
 
       if (response.data.success) {
-        login(response.data.user);
-        
-        localStorage.setItem("token", response.data.token);
-        if (response.data.user.role === "admin") {
-            navigate("/admin-dashboard");
-        }else{
-            navigate("/employee-dashboard");
-        }
-      }
+  // Save token first
+  localStorage.setItem("token", response.data.token);
+
+  // Fetch latest user details
+  await login(response.data.user);
+
+  // Redirect
+  if (response.data.user.role === "admin") {
+    navigate("/admin-dashboard");
+  } else {
+    navigate("/employee-dashboard");
+  }
+}
+
     } catch (error) {
       if (error.response && !error.response.data.success) {
         setError(error.response.data.error);

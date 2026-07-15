@@ -11,6 +11,6 @@ const router = express.Router();
 router.get("/summary", authMiddleware, getSummary);
 
 // Dashboard Charts
-router.get("/chart", authMiddleware, getChartData);
+router.get("/charts", authMiddleware, getChartData);
 
 export default router;

@@ -4,6 +4,9 @@ import { useAuth } from "../../context/authContext";
 const EmployeeSummary = () => {
   const { user } = useAuth();
 
+  // Check what data is coming from AuthContext
+  console.log("Logged-in User:", user);
+
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold">

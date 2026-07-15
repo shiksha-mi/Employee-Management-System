@@ -42,25 +42,10 @@ const AdminSummary = () => {
       }
     };
 
-    const fetchChart = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:5000/api/dashboard/chart",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-
-        console.log("Chart Data:", response.data);
-      } catch (error) {
-        console.log("Chart Error:", error.response?.data || error.message);
-      }
-    };
+    
 
     fetchSummary();
-    fetchChart();
+    
   }, []);
 
   return (

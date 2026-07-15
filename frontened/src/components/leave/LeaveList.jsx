@@ -25,12 +25,15 @@ const LeaveList = () => {
       if (response.data.success) {
         let sno = 1;
 
-        const data = response.data.leaves.map((leave) => ({
+        const validLeaves = response.data.leaves.filter(
+  (leave) => leave.employeeId
+);
+
+const data = validLeaves.map((leave) => ({
           _id: leave._id,
           sno: sno++,
 
           employee: leave.employeeId.userId.name,
-
           leaveType: leave.leaveType,
 
           fromDate: new Date(

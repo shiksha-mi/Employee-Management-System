@@ -25,27 +25,32 @@ const SalaryList = () => {
       if (response.data.success) {
         let sno = 1;
 
-        const data = response.data.salaries.map((salary) => ({
-  _id: salary._id,
-  sno: sno++,
+        // Remove salary records that don't have an employee
+        const validSalaries = response.data.salaries.filter(
+          (salary) => salary.employeeId && salary.employeeId.userId
+        );
 
-  employee: salary.employeeId.userId.name,
+        const data = validSalaries.map((salary) => ({
+          _id: salary._id,
+          sno: sno++,
 
-  basicSalary: salary.basicSalary,
+          employee: salary.employeeId.userId.name,
 
-  allowance: salary.allowances,
+          basicSalary: salary.basicSalary,
 
-  deduction: salary.deductions,
+          allowance: salary.allowances,
 
-  netSalary:
-    Number(salary.basicSalary) +
-    Number(salary.allowances) -
-    Number(salary.deductions),
+          deduction: salary.deductions,
 
-  payDate: new Date(salary.payDate).toLocaleDateString(),
+          netSalary:
+            Number(salary.basicSalary) +
+            Number(salary.allowances) -
+            Number(salary.deductions),
 
-  action: <SalaryButtons _id={salary._id} />,
-}));
+          payDate: new Date(salary.payDate).toLocaleDateString(),
+
+          action: <SalaryButtons _id={salary._id} />,
+        }));
 
         setSalaries(data);
         setFilteredSalary(data);
@@ -69,9 +74,7 @@ const SalaryList = () => {
 
   const filterSalary = (e) => {
     const records = salaries.filter((salary) =>
-      salary.employee
-        .toLowerCase()
-        .includes(e.target.value.toLowerCase())
+      salary.employee.toLowerCase().includes(e.target.value.toLowerCase())
     );
 
     setFilteredSalary(records);
@@ -83,15 +86,11 @@ const SalaryList = () => {
         <div className="text-center mt-10">Loading...</div>
       ) : (
         <div className="p-5">
-
           <div className="text-center">
-            <h3 className="text-2xl font-bold">
-              Manage Salary
-            </h3>
+            <h3 className="text-2xl font-bold">Manage Salary</h3>
           </div>
 
           <div className="flex justify-between my-5">
-
             <input
               type="text"
               placeholder="Search Employee"
@@ -105,7 +104,6 @@ const SalaryList = () => {
             >
               Add Salary
             </Link>
-
           </div>
 
           <DataTable
@@ -115,7 +113,6 @@ const SalaryList = () => {
             highlightOnHover
             responsive
           />
-
         </div>
       )}
     </>
