@@ -4,6 +4,7 @@ import {
   login,
   verify,
   updateProfile,
+  changePassword,
 } from "../controllers/authController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 
@@ -18,6 +19,11 @@ router.put(
   authMiddleware,
   upload.single("profileImage"),
   updateProfile
+);
+router.put(
+  "/change-password",
+  authMiddleware,
+  changePassword
 );
 
 export default router;

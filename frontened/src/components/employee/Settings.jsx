@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/authContext";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Settings = () => {
   const { user, updateUser } = useAuth();
@@ -12,6 +13,17 @@ const Settings = () => {
 
   const [profileImage, setProfileImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [passwordData, setPasswordData] = useState({
+  currentPassword: "",
+  newPassword: "",
+  confirmPassword: "",
+});
+  
+const [showPassword, setShowPassword] = useState({
+  current: false,
+  new: false,
+  confirm: false,
+});
 
   useEffect(() => {
     if (user) {
@@ -28,6 +40,13 @@ const Settings = () => {
       [e.target.name]: e.target.value,
     });
   };
+
+  const handlePasswordChange = (e) => {
+  setPasswordData({
+    ...passwordData,
+    [e.target.name]: e.target.value,
+  });
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -66,6 +85,52 @@ const Settings = () => {
       setLoading(false);
     }
   };
+  const changePassword = async () => {
+  if (
+    !passwordData.currentPassword ||
+    !passwordData.newPassword ||
+    !passwordData.confirmPassword
+  ) {
+    return alert("Please fill all fields");
+  }
+
+  if (
+    passwordData.newPassword !==
+    passwordData.confirmPassword
+  ) {
+    return alert("Passwords do not match");
+  }
+
+  try {
+    const response = await axios.put(
+      "http://localhost:5000/api/auth/change-password",
+      {
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    if (response.data.success) {
+      alert("Password Changed Successfully");
+
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+    }
+  } catch (error) {
+    alert(
+      error.response?.data?.error ||
+      "Failed to change password"
+    );
+  }
+};
 
   return (
     <div className="p-6">
@@ -160,6 +225,101 @@ const Settings = () => {
           >
             {loading ? "Saving..." : "Save Changes"}
           </button>
+          <hr className="my-8" />
+
+<h3 className="text-2xl font-bold mb-5">
+  Change Password
+</h3>
+
+<div className="space-y-4">
+
+  <div>
+    <label className="block font-semibold mb-2">
+      Current Password
+    </label>
+
+    <div className="relative">
+  <input
+    type={showPassword.current ? "text" : "password"}
+    name="currentPassword"
+    value={passwordData.currentPassword}
+    onChange={handlePasswordChange}
+    placeholder="Enter Current Password"
+    className="w-full border rounded-lg px-4 py-2 pr-12"
+  />
+
+  <button
+    type="button"
+    onClick={() =>
+      setShowPassword({
+        ...showPassword,
+        current: !showPassword.current,
+      })
+    }
+    className="absolute right-4 top-3 text-gray-500"
+  >
+    {showPassword.current ? <FaEyeSlash /> : <FaEye />}
+  </button>
+</div>
+  </div>
+
+  <div className="relative">
+  <input
+    type={showPassword.new ? "text" : "password"}
+    name="newPassword"
+    value={passwordData.newPassword}
+    onChange={handlePasswordChange}
+    placeholder="Enter New Password"
+    className="w-full border rounded-lg px-4 py-2 pr-12"
+  />
+
+  <button
+    type="button"
+    onClick={() =>
+      setShowPassword({
+        ...showPassword,
+        new: !showPassword.new,
+      })
+    }
+    className="absolute right-4 top-3 text-gray-500"
+  >
+    {showPassword.new ? <FaEyeSlash /> : <FaEye />}
+  </button>
+</div>
+
+  <div className="relative">
+  <input
+    type={showPassword.confirm ? "text" : "password"}
+    name="confirmPassword"
+    value={passwordData.confirmPassword}
+    onChange={handlePasswordChange}
+    placeholder="Confirm New Password"
+    className="w-full border rounded-lg px-4 py-2 pr-12"
+  />
+
+  <button
+    type="button"
+    onClick={() =>
+      setShowPassword({
+        ...showPassword,
+        confirm: !showPassword.confirm,
+      })
+    }
+    className="absolute right-4 top-3 text-gray-500"
+  >
+    {showPassword.confirm ? <FaEyeSlash /> : <FaEye />}
+  </button>
+</div>
+
+  <button
+    type="button"
+    onClick={changePassword}
+    className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg"
+  >
+    Change Password
+  </button>
+
+</div>
 
         </form>
 

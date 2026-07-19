@@ -1,6 +1,7 @@
 import Leave from "../models/Leave.js";
 import Employee from "../models/Employee.js";
-
+import User from "../models/User.js";
+import sendEmail from "../utils/sendEmail.js";
 // Apply Leave
 const addLeave = async (req, res) => {
   try {
@@ -177,6 +178,35 @@ const updateLeaveStatus = async (req, res) => {
       });
     }
 
+    // Get employee details
+    const employee = await Employee.findById(leave.employeeId);
+
+    if (employee) {
+      const user = await User.findById(employee.userId);
+      console.log("Sending leave email to:", user.email);
+
+      if (user) {
+        await sendEmail(
+          user.email,
+          `Leave Request ${status}`,
+          `
+            <h2>Employee Management System</h2>
+
+            <p>Dear <b>${user.name}</b>,</p>
+
+            <p>Your leave request has been <b>${status}</b>.</p>
+
+            <p><b>Status:</b> ${status}</p>
+
+            <br>
+
+            <p>Regards,</p>
+            <p><b>HR Department</b></p>
+          `
+        );
+      }
+    }
+
     return res.status(200).json({
       success: true,
       message: "Leave status updated successfully",
@@ -195,7 +225,6 @@ const updateLeaveStatus = async (req, res) => {
     });
   }
 };
-
 export {
   addLeave,
   getLeaves,

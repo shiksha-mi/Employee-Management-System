@@ -1,6 +1,8 @@
 import PDFDocument from "pdfkit";
 import Salary from "../models/Salary.js";
+import sendEmail from "../utils/sendEmail.js";
 import Employee from "../models/Employee.js";
+import User from "../models/User.js";
 
 const addSalary = async (req, res) => {
   try {
@@ -22,10 +24,59 @@ const addSalary = async (req, res) => {
 
     await newSalary.save();
 
+    // Find employee
+    const employee = await Employee.findById(employeeId);
+
+    if (employee) {
+      // Find user
+      const user = await User.findById(employee.userId);
+
+      if (user) {
+        console.log("Sending salary email to:", user.email);
+        const netSalary =
+  Number(basicSalary) +
+  Number(allowances) -
+  Number(deductions);
+
+await sendEmail(
+  user.email,
+  `Salary Credited - ${new Date(payDate).toLocaleDateString()}`,
+  `
+  <div style="font-family:Arial,sans-serif;padding:20px;max-width:600px;margin:auto;border:1px solid #ddd;border-radius:8px;">
+      <h2 style="color:#0f766e;">
+          Employee Management System
+      </h2>
+
+      <p>Dear <b>${user.name}</b>,</p>
+
+      <p>Your salary has been credited successfully.</p>
+
+      <p><b>Basic Salary:</b> ₹${basicSalary}</p>
+      <p><b>Allowances:</b> ₹${allowances}</p>
+      <p><b>Deductions:</b> ₹${deductions}</p>
+      <p><b>Net Salary:</b> ₹${netSalary}</p>
+      <p><b>Pay Date:</b> ${new Date(payDate).toLocaleDateString()}</p>
+
+      <hr>
+
+      <p>Thank you for your dedication and hard work.</p>
+
+      <br>
+
+      <p>Regards,</p>
+      <p><b>HR Department</b></p>
+      <p>Employee Management System</p>
+  </div>
+  `
+);
+      }
+    }
+
     return res.status(200).json({
       success: true,
       message: "Salary Added Successfully",
     });
+
   } catch (error) {
     console.log(error);
 

@@ -36,7 +36,8 @@ const SalaryList = () => {
 
           employee: salary.employeeId.userId.name,
 
-          basicSalary: salary.basicSalary,
+          // ✅ Fixed
+          salary: salary.basicSalary,
 
           allowance: salary.allowances,
 
@@ -49,8 +50,15 @@ const SalaryList = () => {
 
           payDate: new Date(salary.payDate).toLocaleDateString(),
 
-          action: <SalaryButtons _id={salary._id} />,
+          action: (
+            <SalaryButtons
+              _id={salary._id}
+              salaryData={salary}
+            />
+          ),
         }));
+
+        console.log(data);
 
         setSalaries(data);
         setFilteredSalary(data);
@@ -74,7 +82,9 @@ const SalaryList = () => {
 
   const filterSalary = (e) => {
     const records = salaries.filter((salary) =>
-      salary.employee.toLowerCase().includes(e.target.value.toLowerCase())
+      salary.employee
+        .toLowerCase()
+        .includes(e.target.value.toLowerCase())
     );
 
     setFilteredSalary(records);
@@ -87,7 +97,9 @@ const SalaryList = () => {
       ) : (
         <div className="p-5">
           <div className="text-center">
-            <h3 className="text-2xl font-bold">Manage Salary</h3>
+            <h3 className="text-2xl font-bold">
+              Manage Salary
+            </h3>
           </div>
 
           <div className="flex justify-between my-5">

@@ -1,3 +1,4 @@
+import { generateSalarySlip } from "./SalarySlip";
 import { useNavigate } from "react-router-dom";
 
 export const columns = [
@@ -12,15 +13,19 @@ export const columns = [
   },
   {
     name: "Salary",
-    selector: (row) => row.salary,
+    cell: (row) => `₹ ${row.salary}`,
   },
   {
     name: "Allowance",
-    selector: (row) => row.allowance,
+    cell: (row) => `₹ ${row.allowance}`,
   },
   {
     name: "Deduction",
-    selector: (row) => row.deduction,
+    cell: (row) => `₹ ${row.deduction}`,
+  },
+  {
+    name: "Net Salary",
+    cell: (row) => `₹ ${row.netSalary}`,
   },
   {
     name: "Pay Date",
@@ -28,14 +33,18 @@ export const columns = [
   },
   {
     name: "Action",
-    selector: (row) => row.action,
+    cell: (row) => row.action,
+    width: "350px",
   },
 ];
 
 import axios from "axios";
 
 
-export const SalaryButtons = ({ _id }) => {
+export const SalaryButtons = ({
+  _id,
+  salaryData,
+}) => {
   const navigate = useNavigate();
 
   const handleDelete = async () => {
@@ -68,29 +77,36 @@ export const SalaryButtons = ({ _id }) => {
   };
 
   return (
-    <div className="flex gap-2">
+   <div className="flex gap-2">
 
-      <button
-        onClick={() => navigate(`/admin-dashboard/salary/${_id}`)}
-        className="bg-green-500 text-white px-3 py-1 rounded"
-      >
-        View
-      </button>
+  <button
+    onClick={() => navigate(`/admin-dashboard/salary/${_id}`)}
+    className="bg-green-500 text-white px-3 py-1 rounded"
+  >
+    View
+  </button>
 
-      <button
-        onClick={() => navigate(`/admin-dashboard/salary/edit/${_id}`)}
-        className="bg-blue-500 text-white px-3 py-1 rounded"
-      >
-        Edit
-      </button>
+  <button
+    onClick={() => generateSalarySlip(salaryData)}
+    className="bg-purple-500 text-white px-3 py-1 rounded"
+  >
+    PDF
+  </button>
 
-      <button
-        onClick={handleDelete}
-        className="bg-red-500 text-white px-3 py-1 rounded"
-      >
-        Delete
-      </button>
+  <button
+    onClick={() => navigate(`/admin-dashboard/salary/edit/${_id}`)}
+    className="bg-blue-500 text-white px-3 py-1 rounded"
+  >
+    Edit
+  </button>
 
-    </div>
+  <button
+    onClick={handleDelete}
+    className="bg-red-500 text-white px-3 py-1 rounded"
+  >
+    Delete
+  </button>
+
+</div>
   );
 };
