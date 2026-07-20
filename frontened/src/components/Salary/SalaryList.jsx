@@ -3,6 +3,9 @@ import axios from "axios";
 import DataTable from "react-data-table-component";
 import { Link } from "react-router-dom";
 import { columns, SalaryButtons } from "../../utils/SalaryHelper";
+import generateSalarySlip from "../../utils/SalarySlip";
+import exportSalaryToExcel from "../../utils/ExportSalaryExcel";
+import exportSalaryToPDF from "../../utils/ExportSalaryPDF";
 
 const SalaryList = () => {
   const [salaries, setSalaries] = useState([]);
@@ -102,7 +105,7 @@ const SalaryList = () => {
             </h3>
           </div>
 
-          <div className="flex justify-between my-5">
+          <div className="flex justify-between items-center my-5">
             <input
               type="text"
               placeholder="Search Employee"
@@ -110,12 +113,30 @@ const SalaryList = () => {
               className="px-4 py-2 border rounded-md"
             />
 
-            <Link
-              to="/admin-dashboard/add-salary"
-              className="px-4 py-2 bg-teal-600 text-white rounded"
-            >
-              Add Salary
-            </Link>
+            <div className="flex gap-3">
+
+  <button
+    onClick={() => exportSalaryToExcel(filteredSalary)}
+    className="px-4 py-2 bg-green-600 text-white rounded"
+  >
+    Export Excel
+  </button>
+
+  <button
+    onClick={() => exportSalaryToPDF(filteredSalary)}
+    className="px-4 py-2 bg-red-600 text-white rounded"
+  >
+    Export PDF
+  </button>
+
+  <Link
+    to="/admin-dashboard/add-salary"
+    className="px-4 py-2 bg-teal-600 text-white rounded"
+  >
+    Add Salary
+  </Link>
+
+</div>
           </div>
 
           <DataTable

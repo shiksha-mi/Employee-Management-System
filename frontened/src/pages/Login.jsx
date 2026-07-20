@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext.jsx";
 
 const Login = () => {
@@ -94,9 +94,9 @@ const Login = () => {
               <span className="ml-2 text-gray-700">Remember me</span>
             </label>
 
-            <a href="#" className="text-teal-600">
-              Forgot password?
-            </a>
+            <Link to="/forgot-password" className="text-teal-600 hover:underline">
+  Forgot Password?
+</Link>
           </div>
 
           <div className="mb-4">

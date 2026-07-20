@@ -1,4 +1,4 @@
-import { generateSalarySlip } from "./SalarySlip";
+import generateSalarySlip from "./SalarySlip";
 import { useNavigate } from "react-router-dom";
 
 export const columns = [

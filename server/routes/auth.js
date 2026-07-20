@@ -5,7 +5,11 @@ import {
   verify,
   updateProfile,
   changePassword,
+  forgotPassword,
+  verifyOTP,
+  resetPassword,
 } from "../controllers/authController.js";
+
 import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -25,5 +29,11 @@ router.put(
   authMiddleware,
   changePassword
 );
+
+router.post("/forgot-password", forgotPassword);
+
+router.post("/verify-otp", verifyOTP);
+
+router.post("/reset-password", resetPassword);
 
 export default router;

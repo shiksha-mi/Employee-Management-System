@@ -3,11 +3,16 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import DataTable from "react-data-table-component";
 import { columns, EmployeeButtons } from "../../utils/EmployeeHelper";
+import exportEmployeesToExcel from "../../utils/ExportEmployeeExcel";
+import exportEmployeesToPDF from "../../utils/ExportEmployeePDF";
 
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
   const [filteredEmployees, setFilteredEmployees] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [departments, setDepartments] = useState([]);
+  const [searchText, setSearchText] = useState("");
+const [selectedDepartment, setSelectedDepartment] = useState("");
 
   const fetchEmployees = async () => {
     setLoading(true);
@@ -66,18 +71,60 @@ const EmployeeList = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchEmployees();
-  }, []);
-
-  const filterEmployees = (e) => {
-    const records = employees.filter((emp) =>
-      emp.name.toLowerCase().includes(e.target.value.toLowerCase())
+  const fetchDepartments = async () => {
+  try {
+    const response = await axios.get(
+      "http://localhost:5000/api/department",
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
     );
 
-    setFilteredEmployees(records);
-  };
+    if (response.data.success) {
+      setDepartments(response.data.departments);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+  useEffect(() => {
+  fetchEmployees();
+  fetchDepartments();
+}, []);
+
+ const filterEmployees = (e) => {
+  const value = e.target.value;
+  setSearchText(value);
+
+  applyFilters(value, selectedDepartment);
+};
+  const filterByDepartment = (e) => {
+  const value = e.target.value;
+  setSelectedDepartment(value);
+
+  applyFilters(searchText, value);
+};
+
+const applyFilters = (search, department) => {
+  let records = employees;
+
+  if (search) {
+    records = records.filter((emp) =>
+      emp.name.toLowerCase().includes(search.toLowerCase())
+    );
+  }
+
+  if (department) {
+    records = records.filter(
+      (emp) => emp.department === department
+    );
+  }
+
+  setFilteredEmployees(records);
+};
 
   return (
     <>
@@ -92,24 +139,61 @@ const EmployeeList = () => {
             </h3>
           </div>
 
-          <div className="flex justify-between my-5">
+          <div className="flex justify-between items-center my-5">
 
-            <input
-              type="text"
-              placeholder="Search Employee"
-              onChange={filterEmployees}
-              className="px-4 py-2 border rounded-md"
-            />
+  <div className="flex gap-4">
 
-            <Link
-              to="/admin-dashboard/add-employee"
-              className="px-4 py-2 bg-teal-600 text-white rounded"
-            >
-              Add New Employee
-            </Link>
+    <input
+      type="text"
+      placeholder="Search Employee"
+      onChange={filterEmployees}
+      className="px-4 py-2 border rounded-md"
+    />
 
-          </div>
+    <select
+      onChange={filterByDepartment}
+      className="px-4 py-2 border rounded-md"
+    >
+      <option value="">All Departments</option>
 
+      {departments.map((dept) => (
+        <option
+          key={dept._id}
+          value={dept.dep_name}
+        >
+          {dept.dep_name}
+        </option>
+      ))}
+    </select>
+
+  </div>
+
+ <div className="flex gap-3">
+
+  <button
+    onClick={() => exportEmployeesToExcel(filteredEmployees)}
+    className="px-4 py-2 bg-green-600 text-white rounded"
+  >
+    Export Excel
+  </button>
+
+  <button
+    onClick={() => exportEmployeesToPDF(filteredEmployees)}
+    className="px-4 py-2 bg-red-600 text-white rounded"
+  >
+    Export PDF
+  </button>
+
+  <Link
+    to="/admin-dashboard/add-employee"
+    className="px-4 py-2 bg-teal-600 text-white rounded"
+  >
+    Add New Employee
+  </Link>
+
+</div>
+
+</div>
           <DataTable
             columns={columns}
             data={filteredEmployees}

@@ -41,6 +41,9 @@ import Attendance from "./components/attendance/Attendance";
 //Setting
 import Settings from "./components/employee/Settings";
 import Unauthorized from "./pages/Unauthorized";
+
+import ForgotPassword from "./pages/ForgotPassword";
+
 function App() {
   return (
     <BrowserRouter>
@@ -50,6 +53,7 @@ function App() {
 
         {/* Login */}
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* ================= ADMIN DASHBOARD ================= */}
         <Route

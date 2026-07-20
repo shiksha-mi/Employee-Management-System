@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import DataTable from "react-data-table-component";
 import { columns, LeaveButtons } from "../../utils/LeaveHelper";
+import exportLeaveToExcel from "../../utils/ExportLeaveExcel";
+import exportLeaveToPDF from "../../utils/ExportLeavePDF";
 
 const LeaveList = () => {
   const [leaves, setLeaves] = useState([]);
@@ -91,6 +93,20 @@ const data = validLeaves.map((leave) => ({
     setFilteredLeaves(records);
   };
 
+  const filterStatus = (e) => {
+  const value = e.target.value;
+
+  if (value === "") {
+    setFilteredLeaves(leaves);
+  } else {
+    const records = leaves.filter((leave) =>
+      leave.status.props.children === value
+    );
+
+    setFilteredLeaves(records);
+  }
+};
+
   return (
     <>
       {loading ? (
@@ -106,23 +122,55 @@ const data = validLeaves.map((leave) => ({
             </h3>
           </div>
 
-          <div className="flex justify-between my-5">
+          <div className="flex justify-between items-center my-5">
 
-            <input
-              type="text"
-              placeholder="Search Employee"
-              onChange={filterLeaves}
-              className="px-4 py-2 border rounded-md"
-            />
+  <div className="flex gap-3">
 
-            <Link
-              to="/admin-dashboard/add-leave"
-              className="px-4 py-2 bg-teal-600 text-white rounded"
-            >
-              Add Leave
-            </Link>
+    <input
+      type="text"
+      placeholder="Search Employee"
+      onChange={filterLeaves}
+      className="px-4 py-2 border rounded-md"
+    />
 
-          </div>
+    <select
+      onChange={filterStatus}
+      className="px-4 py-2 border rounded-md"
+    >
+      <option value="">All Status</option>
+      <option value="Pending">Pending</option>
+      <option value="Approved">Approved</option>
+      <option value="Rejected">Rejected</option>
+    </select>
+
+  </div>
+
+  <div className="flex gap-3">
+
+  <button
+    onClick={() => exportLeaveToExcel(filteredLeaves)}
+    className="px-4 py-2 bg-green-600 text-white rounded"
+  >
+    Export Excel
+  </button>
+
+  <button
+    onClick={() => exportLeaveToPDF(filteredLeaves)}
+    className="px-4 py-2 bg-red-600 text-white rounded"
+  >
+    Export PDF
+  </button>
+
+  <Link
+    to="/admin-dashboard/add-leave"
+    className="px-4 py-2 bg-teal-600 text-white rounded"
+  >
+    Add Leave
+  </Link>
+
+</div>
+
+</div>
 
           <DataTable
             columns={columns}
